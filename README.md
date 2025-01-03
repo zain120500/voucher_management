@@ -12,7 +12,7 @@ This is a Go-based REST API for managing vouchers, brands, and redemptions.
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/yourusername/voucher-management.git
+   git@github.com:zain120500/voucher_management.git
    ```
 
 2. Install dependencies:
