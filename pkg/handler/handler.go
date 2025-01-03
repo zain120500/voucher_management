@@ -25,7 +25,6 @@ func (h *Handler) CreateBrand(c *gin.Context) {
 		return
 	}
 
-	// Validasi
 	validate := validator.New()
 	if err := validate.Struct(&brand); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "validation failed"})
@@ -43,7 +42,6 @@ func (h *Handler) CreateVoucher(c *gin.Context) {
 		return
 	}
 
-	// Validasi
 	validate := validator.New()
 	if err := validate.Struct(&voucher); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "validation failed"})
