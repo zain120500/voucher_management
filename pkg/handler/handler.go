@@ -31,7 +31,11 @@ func (h *Handler) CreateBrand(c *gin.Context) {
 		return
 	}
 
-	h.DB.Create(&brand)
+	if err := h.DB.Create(&brand).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusCreated, brand)
 }
 
@@ -48,7 +52,11 @@ func (h *Handler) CreateVoucher(c *gin.Context) {
 		return
 	}
 
-	h.DB.Create(&voucher)
+	if err := h.DB.Create(&voucher).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusCreated, voucher)
 }
 
@@ -75,7 +83,10 @@ func (h *Handler) GetVouchersByBrand(c *gin.Context) {
 	}
 
 	var vouchers []model.Voucher
-	h.DB.Where("brand_id = ?", brandID).Find(&vouchers)
+	if err := h.DB.Where("brand_id = ?", brandID).Preload("Brand").Find(&vouchers).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "no vouchers found for this brand"})
+		return
+	}
 	c.JSON(http.StatusOK, vouchers)
 }
 
@@ -88,11 +99,16 @@ func (h *Handler) MakeRedemption(c *gin.Context) {
 
 	var totalPoints int
 	for _, voucher := range redemption.Vouchers {
-		totalPoints += voucher.CostInPoint
+		totalPoints += int(voucher.CostInPoint)
 	}
 
+	// Ensure the total points is assigned as an int (not uint)
 	redemption.TotalPoints = totalPoints
-	h.DB.Create(&redemption)
+	if err := h.DB.Create(&redemption).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusCreated, redemption)
 }
 
