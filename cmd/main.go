@@ -9,19 +9,15 @@ import (
 )
 
 func main() {
-	// Initialize database connection
 	db, err := config.InitDB()
 	if err != nil {
 		log.Fatal("failed to connect database: ", err)
 	}
 
-	// Initialize router
 	r := gin.Default()
 
-	// Initialize handlers with DB
 	h := handler.NewHandler(db)
 
-	// Define routes
 	r.POST("/brand", h.CreateBrand)
 	r.POST("/voucher", h.CreateVoucher)
 	r.GET("/voucher", h.GetVoucher)
@@ -29,6 +25,5 @@ func main() {
 	r.POST("/transaction/redemption", h.MakeRedemption)
 	r.GET("/transaction/redemption", h.GetTransactionDetail)
 
-	// Run server
 	r.Run(":8080")
 }
